@@ -1,32 +1,40 @@
 '''
- A trie data structure is a particular kind of tree which exploits the fact that strings we seek to store are in an underlying alphabet.
- For example, suppose our alphabet is {0,1,2,3}. And suppose we want to store the set of strings {010,00,0100,210,1231,12}.
- Assuming 0 < 1 < 2 < 3 and adopting the corresponding lexicographic ordering for the strings, we could store those strings in a binary search tree that may look like the following. 
- 12
-210010
-00 0100 1231
-Instead, in a trie, each node can be thought of as an array of pointers, each corresponding to each entry in the alphabet. 
-So, in our case, each node is an array of size 4, which we assume correspond to the alphabet symbols 0,1,2,3, in left-to-right order.
-A trie that corresponds to the above set of strings would then look like the picture below. 
-To search for a string, we start at the top node, and follow down the trie, symbol-by-symbol. 
-The bolded nodes are terminal nodes, which indicate that a string terminates at that symbol. 
-For example, if we were to search for the string “21” in the above trie, we would arrive at the penultimate node in the rightmost branch. 
-That node is not a terminal node, and thereby, we discover that the string “21” is not in the set. If we instead search for “010,” we arrive at the penultimate node in the second branch from the left, which is a terminal node. 
-Thereby, we discover that that string is indeed in the set. Any string that begins with the symbol 3 we would discover is not in the set simply by observing that at the root node, the slot that corresponds to 3 is Nil. 
-This is also how we would discover that the string “1220” is not in the set – we would fail at the second ‘2.’
-What you need to do you need to implement three methods. 
-trieInsert(t,s) – inserts the string s in the alphabet {0,1,2,3} into the trie t. If s is already in t, then this method does nothing. 
-trieDelete(t,s) – deletes the string s from the trie t. If s is not in t, then this method does nothing. 
-trieFind(t,s) – returns True if the string s is in t, and False otherwise. 
-Structure of a trie We model each node in the trie as a list of two items: (i) a list, and, (ii) True or False.
-The list (i) has four items, each corresponding to each alphabet symbol. 
-We use an empty list [] for what we refer to as a Nil pointer above.
-Each entry in the list (i) may itself be a trie node, i.e., a list of two items (i) and (ii). 
-The boolean entry (ii) for a node indicates whether this node is a terminal. 
-We adopt the convention that a trie t = [], i.e., an empty list, if and only if the trie t is empty, i.e., has no strings in it.
-Thus, if t is [[[], [], [], []], True], then t is a trie that comprises the empty string, which is often represented as , but in python would be ’’. 
-Note that [[[], [], [], []], False] is not a valid trie. More generally, every leaf node should be a terminal. 
-The trie [[[], [[[], [], [], []], True], [], []], False] contains only one string, ‘1.’
-The trie [[[[[], [], [], []], True], [[[[[], [], [], []], True], [], [], []], False], [], []], True] contains three strings: , ‘0’ and ‘10.’
-The trie from the above picture, which encodes the set of strings {010,00,0100,210,1231,12}, is in the tester.
+Insert, delete, find a list in a trie
 '''
+def trieInsert(t,s):
+    if s == '':
+        if len(t) < 2:
+            return [ [[], [], [], []] , True ]
+        else:
+            t[1] = True
+            return t
+    else:
+        if len(t) < 2:
+            t.append([ [], [], [], [] ])
+            t.append(False)
+            t[0][int(s[0])] = trieInsert(t[0][int(s[0])], s[1:])
+        else:
+            t[0][int(s[0])] = trieInsert(t[0][int(s[0])], s[1:])
+    return t
+
+def trieDelete(t,s):
+    if len(t) > 1:
+        if s == '':
+            t[1] = False
+            if t[0] == [[],[],[],[]]: 
+                return []
+        else :
+            t[0][int(s[0])] = trieDelete(t[0][int(s[0])], s[1:])
+            if t == [[[],[],[],[]], False] :
+                return []
+    return t 
+
+         
+def trieFind(t,s):
+    if len(t) == 2:
+        if s == '':
+            return t[1]
+        else:
+            return trieFind(t[0][int(s[0])], s[1:])
+    return False
+    
