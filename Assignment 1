@@ -1,0 +1,41 @@
+'''
+ Write a python function avgfalsepos (see the skeleton a1p1.py ﬁle on Learn in the module for this assignment) that takes three arguments:
+ (i) n ∈N which is the size of U, (ii) k ∈{1,2,...,n}, which is the size of S, and, (iii) m ∈ N which is the size of the array B[·]. 
+The function should compute and return a real number of the average number of false positives for a Bloom ﬁlter across 100 uniform choices for the random function f : U →{0,1,...,m−1}.
+High-level pseudo-code for the function you need to write is as follows.
+result ← 0 
+foreach i from 0 to 99 do 
+    f ← uniform choice of random function: U →{0,...,m−1} 
+    p ← number of false positives for this choice of f 
+    result ← i×result+p i+1 
+return result
+'''
+def avgfalsepos(n,k,m):
+    i = 0 
+    j = 0
+    p = 0
+    l = 0
+    result = 0
+    U = set()
+    selcteofu = set()
+    arrayb = [0] * m
+    while len(U) < n:
+        U.add(random.randint(0,n+10000))
+    selcteofu.update(random.sample(set(U),k))
+    listofs = list(selcteofu)
+    restofu = list(set(U)-set(selcteofu)) 
+    for i in range (0,100):
+        result = ((i * result) + p)/(i + 1)
+        def randomf(a):
+            return random.randint(0,m-1)
+        while l < k:
+            fi = randomf(listofs[l])
+            arrayb[fi] = 1
+            l = l + 1
+        while j < n - k:
+            fj = randomf(restofu[j])
+            if arrayb[fj] == 1:
+                p = p + 1
+            j = j + 1 
+    print(result)
+    return result
