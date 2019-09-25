@@ -1,14 +1,26 @@
 '''
- Consider the following randomized algorithm to ﬁnd the median in an input array A[1,...,n] of distinct integers, where n is odd.
- Med(A[1,...,n]) 
- 1 S ←∅ 
- 2 while true do 
- 3 i ← uniform choice from {1,...,n}\S 
- 4 Check if A[i] is the median 
- 5 if yes then return A[i] 
- 6 S ← S ∪{i}
-Empirically conﬁrm your analytical solution to Algorithm above via a python program. 
-More speciﬁcally, ﬁrst implement the above algorithm Med, but include in it the ability to record the number of executations of Line (3) using a counter variable. 
-On each input, which is a list of an odd number of distinct integers, invoke Med 100 times, and compute the average number of executions of Line (3) across the 100 invocations of Med. 
-That is to be your return value from the method avgtrials. 
+ Check the excute time of a algorithm  of finding a medium number
 '''
+def avgtrials(A):
+    b = 0
+    A.sort()
+    pre = (len(A) - 1) / 2
+    med = A[int(pre)]
+    for k in range(100):
+        count = 0
+        P = 0
+        S = []
+        while P == 0 :
+            B = list(set(A) - set(S))
+            i = random.randint(0, len(B)-1)
+            num = B[i]
+            lb = len(B)
+            la = len(A)
+            count = count + 1
+            if num == med:
+                b = b + count
+                P = 1
+            else:
+                S.append(num)
+    b = b / 100
+    return b
