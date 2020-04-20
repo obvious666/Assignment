@@ -1,0 +1,54 @@
+def negcycle(G):
+    point1 = []             
+    point2 = []     
+    w  = []
+    zeropint = []
+    weight = []
+    path = [0]
+#    print(path)
+    for i in range(len(G)):
+        for j in range(len(G[i])):
+            if G[i][j] != 0:
+                w.append(G[i][j][1])
+                point1.append(i)
+                point2.append(G[i][j][0])
+#    print(point1)
+#    print(point2)
+#    print(w)
+    dis = G.copy[]
+    for i in range (len(dis)):
+        dis[i] = 1000
+    dis[0] = 0
+#    print(dis)
+    orig = 0
+    for k in range(len(G)-1):  
+        check = 0        
+        for i in range(len(w)):   
+            if dis[point1[i]] + w[i] < dis[point2[i]]:                
+                dis[point2[i]] = dis[point1[i]] + w[i]
+                value = 0
+                for m in range (len(path)):
+                    if path[m] == point1[i]:
+                        value = 1
+                if value == 0:
+                    path.append(point1[i])
+                check = 1
+        if check == 0: break
+#    print(dis)
+#    print(path)
+    for j in range (len(point2)):
+        if point2[j] == 0:
+            zeropint.append(point1[j])
+            weight.append(w[j])     
+#    print (zeropint)
+#    print (weight)
+    for k in range (len(zeropint)):
+        if dis[zeropint[k]] + weight[k] < 0:
+            findpoint = zeropint[k]
+            path.append(findpoint)
+            path.append(0)
+            break
+        else:
+            path = []
+    print (path)
+    return path
