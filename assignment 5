@@ -1,0 +1,43 @@
+'''
+Realize your algorithm as Python 3 code in a5p3b.py, as the
+method mincoinslist. The oracle is provided to you as byte code, and already imported
+via the import line. The arguments to your method are (i) a list, C, e.g., [1, 5, 10,
+25], and, (ii) a natural number a. You are to return a list whose length is the same as
+C.
+'''
+from a5p3bminnumcoins import minnumcoins
+
+"""
+You are not allowed to import anything else.
+You need to implement the following method. You are
+allowed to define whatever subroutines you like to
+structure your code.
+"""
+
+def mincoinslist(C, a):
+    coinlist = [0] * len(C)
+    def mincoinslist1 (Ccopy,dotv):
+        A = Ccopy[0:len(Ccopy) - 1].copy()
+        B = A.copy()
+        if len(B) == 0:
+            B = [Ccopy[0]]
+        while dotv - Ccopy[len(Ccopy) - 1] < 0:
+            if dotv == 0:
+                return [coinlist]
+            Ccopy = A.copy()
+            B = A[0:len(A) - 1].copy()
+            A = Ccopy[0:len(Ccopy) - 1].copy()
+            if len(B) == 0:
+                B = [Ccopy[0]]
+        largvalue = (dotv - Ccopy[len(Ccopy) - 1])
+        val1 = minnumcoins(B, dotv)
+        val2 = minnumcoins(Ccopy, largvalue) + 1
+        if dotv > 0:
+            if minnumcoins(B, dotv) >= minnumcoins(Ccopy, largvalue) + 1:
+                coinlist[len(Ccopy) - 1] = coinlist[len(Ccopy) - 1] + 1
+                dotv = dotv - Ccopy[len(Ccopy) - 1]
+                return mincoinslist1(Ccopy, dotv)
+            else:
+                return mincoinslist1(B, dotv)
+    mincoinslist1(C, a)
+    return (coinlist)
