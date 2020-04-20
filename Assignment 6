@@ -1,0 +1,163 @@
+'''
+Devise, then code in python 3, a ecient algorithm for the following
+problem. Inputs: (i) a connected weighted undirected graph G = hV;Ei, and, (ii) an edge
+e 2 E. Output: true if there is a minimum spanning tree of G that contains e, and false
+otherwise. G is provided in adjacency list format, and e as a list which encodes a pair.
+E.g., an encoding of the following graph is [[[3,10], [1,100], [2, 20]], [[0,100]],
+1
+[[0,20],[3,10]], [[2,10],[0,10]]], and the output is false for edge [2,0] and true for
+edge [0,1]
+'''
+def mstexists(G, e):
+    w = []
+    point1 = []
+    point2 = []
+    connect = [[]]
+    path = [[[]]]
+    for f in range(len(G)):
+        for j in range(len(G[f])):
+            if G[f][j] != 0:
+                w.append(G[f][j][1])
+                point1.append(f)
+                point2.append(G[f][j][0])
+    for f in range(len(point1)-1):
+        for j in range(f+1, len(point1)):
+            if point1[f] == point2[j] and point1[j] == point2[f]:
+                del point2[j]
+                del point1[j]
+                del w[j]
+                break
+    j = 0
+    f = 0
+    dis = []
+    for gg in range (len(w)):
+        dis.append(20000)
+    for iii in range (len(w)):
+        index = 0
+        val = 20000
+        ifidential = 0
+        for i in range(len(w)-2):
+            if w[i] != w[i+1] and w[i] != 20000:
+                ifidential = 1
+        for i in range (len(w)):
+            if w[i] < val:
+                val = w[i]
+                index = i
+        dis[index] = val
+        w[index] = 20000
+        jud = 0
+        bk = 0
+        jude = 0
+        for f in range (len(connect)):
+            for k in range (len(connect[f])):
+                if bk == 1:
+                    break
+                bk = 0
+                if connect[f][k] == point1[index]:
+                    for jjj in range (len(connect[f])):
+                        if connect [f][jjj] == point2[index]:
+                            jude = 1
+                            jud = 1
+                            break
+                    if jude == 0:
+                        connect[f].append(point2[index])
+                        path[f].append([point1[index],point2[index]])
+                        jud = 1
+                        bk = 1
+                        break
+                elif connect[f][k] == point2[index]:
+                    for jjj in range (len(connect[f])):
+                        if connect [f][jjj] == point1[index]:
+                            jude = 1
+                            jud = 1
+                    if jude == 0:
+                        path[f].append([point1[index],point2[index]])
+                        connect[f].append(point1[index])
+                        jud = 1
+                        bk = 1
+                        break
+        bkkk = 0
+        for n in range (len(connect)):
+            if bkkk == 1:
+                break
+            for l in range (len(connect)):
+                if l == n:
+                    pass
+                else:
+                    if bkkk == 1:
+                        break
+                    for m in range(len(connect[l])):
+                        if connect[n][len(connect[n]) - 1] == connect[l][m]:
+                            for pathindex1 in range(len(path[l])):
+                                bkk = 0
+                                for pathindex2 in range(len(connect[n])):
+                                    if bkk == 1:
+                                        break
+                                    for pathindex3 in range(len(connect[n])):
+                                        if path[l][pathindex1][0] == connect[n][pathindex2] and path[l][pathindex1][1] == connect[n][pathindex3]:
+                                            pass
+                                        else:
+                                            path[n].append(path[l][pathindex1])
+                                            bkk = 1
+                                            break
+                            del path[l]
+                            connect[n] = list(set(connect[n]).union(set(connect[l])))
+                            del connect[l]
+                            bkkk = 1
+                            break
+        if jud == 0:
+            addlist = [point1[index],point2[index]]
+            if len(connect[0]) == 0:
+                connect[0] = addlist.copy()
+                path[0][0] = addlist.copy()
+            else:
+                connect.append(addlist)
+                path.append([addlist]) 
+        if len(connect[0]) == len(G) and ifidential == 1:
+            break
+        elif ifidential == 0 and len(connect[0]) == len(G):
+            weight = G[0][0][1]
+            pathmin = 0
+            if e[0] < e [1]:
+                pathmin = e[0]
+                pathmax = e[1]
+            else:
+                pathmin = e[1]
+                pathmax = e[0]
+            for finalindex in range (len(path[0])):
+                if (path[0][finalindex][0] == e[0] and path[0][finalindex][1] == e[1]) or (path[0][finalindex][0] == e[1] and path[0][finalindex][1] == e[0]):
+                    return True
+            gcopy = G.copy()
+            for i in range (pathmin):
+                del gcopy[0]
+            for j in range(len(gcopy)):
+                for k in range(pathmin):
+                    if j != k:
+                        gcopy[j].remove([k,weight])
+            return mstexists(gcopy, [0,pathmax])
+    for finalindex in range (len(path[0])):
+        if (path[0][finalindex][0] == e[0] and path[0][finalindex][1] == e[1]) or (path[0][finalindex][0] == e[1] and path[0][finalindex][1] == e[0]):
+            return True
+    return False
+import random
+if __name__ == "__main__":
+    n = random.randint(10,100)
+    w = random.randint(1,10)
+    G = []
+    for i in range(n):
+        l = []
+        for j in range(n):
+            if i == j:
+                continue
+            l.append([j, w])
+        random.shuffle(l)
+        G.append(l)
+    # randomly pick an edge
+    u = random.randint(0, n-1)
+    v = u
+    while v == u:
+        v = random.randint(0,n-1)
+    if(mstexists(G, [u,v])):
+        print('passed.')
+    else:
+        print('failed.')
