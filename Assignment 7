@@ -1,0 +1,73 @@
+def minncoins(C, N, a):        
+    sumvalu = 0
+    def cycle (C, N, a,sumvalu):
+        coinlist = [[]]
+        coinnum = [0] * len(C)
+        sumcoin = 0
+        for sumi in range (len(C)):
+            sumcoin = sumcoin + N[sumi] * C[sumi]
+        if C[0] > a or a % C[0] != 0:
+            return float('inf')
+        if  sumcoin < a:
+            return float('inf')
+        def mincoin2(C,a):
+            dp = [0] * (a + 1)
+            path = [0] * (a + 1)
+            coinvalue = a
+            coinlist1 = []
+            for i in range(1, a+1):
+                minNum = i
+                for lll in C:
+                    if i >= lll and minNum >= dp[i-lll]+1:
+                        minNum = dp[i-lll]+1
+                        path[i] = i - lll
+                dp[i] = minNum
+            while path[coinvalue] != 0:
+                coinlist1.append(coinvalue-path[coinvalue])
+                coinvalue = path[coinvalue]
+                if path[coinvalue] == 0:
+                    coinlist1.append(coinvalue-path[coinvalue])
+            return coinlist1
+        coinlist[0] = mincoin2(C, a)
+        if len(mincoin2(C,a)) == len(mincoin2(C[0:len(C)-1],a)):
+            coinlist.append(mincoin2(C[0:len(C)-1],a))
+        for ii in range (len(coinlist[0])):
+            for jj in range (len(C)):
+                if coinlist[0][ii] == C[jj]:
+                    coinnum[jj] = coinnum[jj] + 1
+        sumvalu = sumvalu +len(coinlist[0])
+        jud = 0
+        coinvalue2 = a
+        ifbigger = 0
+        for kk in range(len(coinlist)):
+            for jj in range(len(coinnum)-1, -1,-1):
+                if coinnum[jj] > N[jj]and ifbigger == 0:
+                    if len(coinlist) == 1:
+                        ifbigger = 1
+                        break
+                    else :
+                        coinnum = [0] * len(C)
+                        del coinlist[0]
+                        for ii in range(len(coinlist[0])):
+                            for gg in range(len(C)):
+                                if coinlist[0][ii] == C[gg]:
+                                    coinnum[gg] = coinnum[gg] + 1
+                        break
+        for kk in range(len(coinnum)-1, -1,-1):
+            if coinnum[kk] > N[kk]:
+                jud = 1
+                sumvalu = sumvalu - 1
+                inter = C[kk]                
+                del C[kk]
+                del N[kk]
+                Ca = C.copy()
+                Na = N.copy()
+                if (sumvalu + cycle (C, N, inter,sumvalu)) <= cycle (Ca, Na, coinvalue2,sumvalu):
+                    return cycle (C, N, inter,sumvalu)
+                else:
+                    sumvalu = 0
+                    return cycle (C, N, coinvalue2,sumvalu) 
+        if jud == 0:
+            return sumvalu 
+    result = cycle (C, N, a,sumvalu)
+    return result
