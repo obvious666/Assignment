@@ -1,0 +1,28 @@
+def hampath(G):
+    allpath = []
+    def dfs(G1,a,b,path=[]):
+        finalpath = []
+        path = path + [a]
+        if a == b:
+            listp = [path]
+            return listp
+        
+        for i in range (len(G1[a])):
+            node = G1[a][i]
+            judge = 0 
+            for k in range (len(path)):
+                if node == path[k]:
+                    judge = 1
+            if judge == 0:
+                newpaths = dfs(G1,node,b,path) 
+                for j in range (len(newpaths)):
+                    finalpath.append(newpaths[j])
+        return finalpath
+    for i in range (len(G)):
+        for j in range (len(G)):
+            if i == j:
+                continue
+            allpath = dfs(G,i,j)
+            for k in range (len(allpath)):
+                if len(allpath[k]) == len(G):
+                    return allpath[k]
